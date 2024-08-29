@@ -1,0 +1,36 @@
+# This file configures Charmcraft.
+# See https://juju.is/docs/sdk/charmcraft-config for guidance.
+
+name: ldap-integrator
+
+type: charm
+
+title: LDAP Integrator
+
+summary: An integrator charm for configuring ldap clients.
+
+description: |
+  An integrator charm for configuring ldap clients.
+
+bases:
+  - build-on:
+    - name: ubuntu
+      channel: "22.04"
+    run-on:
+    - name: ubuntu
+      channel: "22.04"
+
+
+config:
+  options:
+    server-urls:
+      description: |
+        Comma separated list of ldap urls
+      type: string
+
+
+parts:
+  charm:
+    build-packages:
+      - rustc
+      - cargo
