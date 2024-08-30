@@ -20,12 +20,40 @@ bases:
     - name: ubuntu
       channel: "22.04"
 
+provides:
+  ldap:
+    description: |
+      Provides LDAP configuration data
+    interface: ldap
+
 
 config:
   options:
-    server-urls:
+    urls:
       description: |
-        Comma separated list of ldap urls
+        Comma separated list of ldap server urls
+      type: string
+    base_dn:
+      description: |
+        The base_dn
+      type: string
+    starttls:
+      description: |
+        Whether starttls is used, defaults to true
+      defaults: true
+      type: boolean
+    bind_dn:
+      description: |
+        The bind_dn
+      type: string
+    bind_password:
+      description: |
+        The bind password
+      type: string
+    auth_method:
+      description: |
+        The authentication method, defaults to simple
+      defaults: simple
       type: string
 
 
