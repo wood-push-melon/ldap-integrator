@@ -1,7 +1,7 @@
 # Copyright 2024 Canonical Ltd.
 # See LICENSE file for licensing details.
 
-from typing import Dict
+from typing import Dict, Tuple
 from unittest.mock import MagicMock
 
 import pytest
@@ -48,6 +48,7 @@ class TestHolisticHandler:
         all_satisfied_conditions: MagicMock,
         ldap_integration: int,
         charm_configuration: Dict,
+        password_secret: Tuple[str, str],
     ) -> None:
         mocked_provider = mocker.patch("charm.LdapProvider.update_relations_app_data")
 
@@ -58,7 +59,7 @@ class TestHolisticHandler:
             base_dn=charm_configuration["base_dn"],
             starttls=charm_configuration["starttls"],
             bind_dn=charm_configuration["bind_dn"],
-            bind_password=charm_configuration["bind_password"],
+            bind_password=password_secret[0],
             auth_method=charm_configuration["auth_method"],
         )
         mocked_provider.assert_called_once_with(expected, relation_id=ldap_integration)

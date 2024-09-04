@@ -4,3 +4,4 @@
 """Constants for the charm."""
 
 LDAP_INTEGRATION_NAME = "ldap"
+CONFIG_PASSWORD_SECRET_KEY = "password"

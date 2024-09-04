@@ -63,7 +63,17 @@ async def test_ldap_integration(
 
     data = await get_app_integration_data(ops_test, GLAUTH_APP, "ldap-client")
 
-    assert data.pop("bind_password_secret", None)
+    secret = data.pop("bind_password_secret", None)
+    assert secret
+    bind_password_databag = (
+        await ops_test.model.list_secrets({"uri": secret}, show_secrets=True)
+    )[0].value
+    bind_password_config = (
+        await ops_test.model.list_secrets(
+            {"uri": ldap_integrator_charm_config["bind_password"]}, show_secrets=True
+        )
+    )[0].value
+    assert bind_password_databag == bind_password_config
     assert data == {
         "auth_method": ldap_integrator_charm_config["auth_method"],
         "base_dn": ldap_integrator_charm_config["base_dn"],
@@ -73,6 +83,7 @@ async def test_ldap_integration(
     }
 
 
+@pytest.mark.skip_if_deployed
 async def test_remove_ldap_integration(
     ops_test: OpsTest, ldap_integrator_application: Application
 ) -> None:

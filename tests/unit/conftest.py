@@ -1,7 +1,7 @@
 # Copyright 2024 Canonical Ltd.
 # See LICENSE file for licensing details.
 
-from typing import Dict, Generator
+from typing import Dict, Generator, Tuple
 from unittest.mock import MagicMock, create_autospec
 
 import pytest
@@ -30,13 +30,23 @@ def mocked_event() -> MagicMock:
 
 
 @pytest.fixture
-def charm_configuration(harness: Harness) -> Dict:
+def password_secret(harness: Harness) -> Tuple[str, str]:
+    bind_password = "bind_password"
+    secret = harness.add_user_secret({"password": bind_password})
+    harness.grant_secret(secret, harness.charm.app)
+    return bind_password, secret
+
+
+@pytest.fixture
+def charm_configuration(harness: Harness, password_secret: Tuple[str, str]) -> Dict:
+    secret = harness.add_user_secret({"password": "secret"})
+    harness.grant_secret(secret, harness.charm.app)
     config = {
         "urls": "ldap://ldap.com/path/to/somewhere",
         "base_dn": "dc=glauth,dc=com",
         "starttls": True,
         "bind_dn": "cn=user,ou=group,dc=glauth,dc=com",
-        "bind_password": "password",
+        "bind_password": password_secret[1],
         "auth_method": "simple",
     }
     harness.update_config(config)

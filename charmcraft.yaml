@@ -49,7 +49,7 @@ config:
     bind_password:
       description: |
         The bind password
-      type: string
+      type: secret
     auth_method:
       description: |
         The authentication method, defaults to simple

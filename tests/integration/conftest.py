@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import AsyncGenerator, Dict, Optional
 
 import pytest
+import pytest_asyncio
 import yaml
 from juju.application import Application
 from pytest_operator.plugin import OpsTest
@@ -69,14 +70,21 @@ def ldap_integrator_application(ops_test: OpsTest) -> Application:
     return ops_test.model.applications[APP_NAME]
 
 
-@pytest.fixture
-def ldap_integrator_charm_config() -> Dict:
+@pytest_asyncio.fixture
+async def ldap_integrator_charm_config(ops_test: OpsTest) -> Dict:
+    secrets = await ops_test.model.list_secrets({"label": "password"})
+    if not secrets:
+        password = await ops_test.model.add_secret("password", ["password=secret"])
+    else:
+        password = secrets[0].uri
+    await ops_test.model.grant_secret("password", APP_NAME)
+
     return {
         "urls": "ldap://ldap.com/path/to/somewhere",
         "base_dn": "dc=glauth,dc=com",
         "starttls": "True",
         "bind_dn": "cn=user,ou=group,dc=glauth,dc=com",
-        "bind_password": "password",
+        "bind_password": password,
         "auth_method": "simple",
     }
 
