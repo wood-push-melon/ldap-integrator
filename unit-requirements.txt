@@ -3,5 +3,6 @@ coverage[toml]
 cryptography
 ipdb
 jsonschema
+pydantic
 pytest
 pytest-mock
