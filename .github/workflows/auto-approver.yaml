@@ -16,10 +16,10 @@ jobs:
         run: |
           gh pr review --approve || true
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
       - name: Enable automerge if required
         if: startsWith(github.ref_name, 'renovate/auto-')
         run: |
           gh pr merge --auto --merge || true
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
