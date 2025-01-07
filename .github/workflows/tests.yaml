@@ -24,10 +24,12 @@ jobs:
 
       - name: Get contexts
         run: kubectl config view
-        if: failure()
+        if: always()
 
       - name: Get juju status
         run: juju status --relations
+        if: always()
 
       - name: Get juju logs
         run: juju debug-log --replay
+        if: always()

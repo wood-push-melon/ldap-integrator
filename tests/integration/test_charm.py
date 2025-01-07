@@ -45,6 +45,7 @@ async def test_build_and_deploy(ops_test: OpsTest) -> None:
         ),
     )
     await ops_test.model.integrate(GLAUTH_APP, CERTIFICATE_PROVIDER_APP)
+    logger.info("after the certificates integration")
 
     await ops_test.model.wait_for_idle(
         apps=[APP_NAME], status="blocked", raise_on_blocked=False, timeout=1000
@@ -55,7 +56,10 @@ async def test_ldap_integration(
     ops_test: OpsTest, ldap_integrator_application: Application, ldap_integrator_charm_config: Dict
 ) -> None:
     await ldap_integrator_application.set_config(ldap_integrator_charm_config)
+    logger.info("after the config setup for ldap integrator")
+
     await ops_test.model.integrate(GLAUTH_APP, APP_NAME)
+    logger.info("after the ldap integration")
 
     await ops_test.model.wait_for_idle(
         apps=[APP_NAME, GLAUTH_APP], status="active", raise_on_blocked=False, timeout=1000
