@@ -70,6 +70,11 @@ def ldap_integrator_application(ops_test: OpsTest) -> Application:
     return ops_test.model.applications[APP_NAME]
 
 
+@pytest_asyncio.fixture(scope="module")
+async def local_charm(ops_test: OpsTest) -> Path:
+    return await ops_test.build_charm(".")
+
+
 @pytest_asyncio.fixture
 async def ldap_integrator_charm_config(ops_test: OpsTest) -> Dict:
     secrets = await ops_test.model.list_secrets({"label": "password"})
@@ -77,7 +82,7 @@ async def ldap_integrator_charm_config(ops_test: OpsTest) -> Dict:
         password = await ops_test.model.add_secret("password", ["password=secret"])
     else:
         password = secrets[0].uri
-    await ops_test.model.grant_secret("password", APP_NAME)
+    # await ops_test.model.grant_secret("password", APP_NAME)
 
     return {
         "urls": "ldap://ldap.com/path/to/somewhere",
